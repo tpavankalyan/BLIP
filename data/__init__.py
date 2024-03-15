@@ -11,6 +11,8 @@ from data.nlvr_dataset import nlvr_dataset
 from data.pretrain_dataset import pretrain_dataset
 from transform.randaugment import RandomAugment
 
+from data.WIDO_dataset import WIDO_train, WIDO_retrieval_eval
+
 def create_dataset(dataset, config, min_scale=0.5):
     
     normalize = transforms.Normalize((0.48145466, 0.4578275, 0.40821073), (0.26862954, 0.26130258, 0.27577711))
@@ -55,6 +57,12 @@ def create_dataset(dataset, config, min_scale=0.5):
         val_dataset = flickr30k_retrieval_eval(transform_test, config['image_root'], config['ann_root'], 'val') 
         test_dataset = flickr30k_retrieval_eval(transform_test, config['image_root'], config['ann_root'], 'test')          
         return train_dataset, val_dataset, test_dataset     
+    
+    elif dataset=='retrieval_WIDO':
+        train_dataset = WIDO_train(config['train_path'],transform_train, config['image_root'])
+        val_dataset = WIDO_retrieval_eval(config['val_path'],config['test_path'],transform_test, config['image_root'], 'val')
+        test_dataset = WIDO_retrieval_eval(config['val_path'],config['test_path'],transform_test, config['image_root'], 'test')   
+        return train_dataset, val_dataset, test_dataset   
     
     elif dataset=='vqa': 
         train_dataset = vqa_dataset(transform_train, config['ann_root'], config['vqa_root'], config['vg_root'], 
